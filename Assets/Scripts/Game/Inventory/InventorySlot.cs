@@ -21,45 +21,23 @@ public class InventorySlot : Slot
         }
         if (ActiveSlot != null && Vector3.Distance(transform.position, ActiveSlot.transform.position) < 15 && Input.GetMouseButtonUp(0))
         {
+            if (ActiveSlot.ParentSlot == gameObject)
+            {
+                return;
+            }
             EquipSlot PrevEquipSlot = ActiveSlot.ParentSlot.GetComponent<EquipSlot>();
             InventorySlot PrevInventorySlot = ActiveSlot.ParentSlot.GetComponent<InventorySlot>();
             Slot PrevSlot = null;
-            //if (SlotType == "q" && ShopItemsPool.IsEquipment(PrevSlot.ItemID))
-            //{
-            //    return;
-            //}
+            if (PrevEquipSlot != null)
+            {
+                PrevSlot = PrevEquipSlot;
+            }
+            else
+            {
+                PrevSlot = PrevInventorySlot;
+            }
             if (ItemID == ActiveSlot.ItemID || ItemID == -1)
             {
-                //if (ActiveSlot.IsEquipment)
-                //{
-                //    Armor a = (Armor)ShopItemsPool.ItemByID(ActiveSlot.ItemID);
-                //    player.Armor -= a.armor;
-                //    ActiveSlot.ParentSlot.GetComponent<EquipSlot>().ItemID = -1;
-                //    ActiveSlot.ParentSlot.transform.GetChild(1).gameObject.SetActive(false);
-                //}
-                //else if (ActiveSlot.ParentSlot.name == gameObject.name)
-                //{
-                //    ItemCount--;
-                //    return;
-                //}
-                //else
-                //{
-                //    PrevSlot.ItemCount--;
-                //    if (PrevSlot.ItemCount <= 0)
-                //    {
-                //        PrevSlot.ItemID = -1;
-                //        ActiveSlot.ParentSlot.transform.GetChild(1).gameObject.SetActive(false);
-                //        ActiveSlot.ParentSlot.transform.GetChild(2).gameObject.GetComponent<Text>().enabled = false;
-                //    }
-                //}
-                if ( PrevEquipSlot != null)
-                {
-                    PrevSlot = PrevEquipSlot;
-                }
-                else
-                {
-                    PrevSlot = PrevInventorySlot;
-                }
                 if (ItemID == -1)
                 {
                     ItemCount = PrevSlot.ItemCount;
@@ -70,15 +48,14 @@ public class InventorySlot : Slot
                     {
                         PrevSlot.ItemCount = 0;
                     }
-                    PrevSlot.ItemID = -1;
-                    //ActiveSlot.ParentSlot.transform.GetChild(2).gameObject.GetComponent<Text>().enabled = false;
                 }
-                else if (ActiveSlot.ItemID == ItemID) //if непаривльный 
+                else if (ActiveSlot.ItemID == ItemID)
                 {
                     ItemCount++;
                     transform.GetChild(2).gameObject.GetComponent<Text>().enabled = true;
                 }
                 ActiveSlot.ParentSlot.transform.GetChild(1).gameObject.SetActive(false);
+                PrevSlot.ItemID = -1;
             }
             else
             {

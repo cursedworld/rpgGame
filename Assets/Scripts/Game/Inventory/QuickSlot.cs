@@ -1,11 +1,13 @@
+using UnityEngine;
 using UnityEngine.UI;
 
 public class QuickSlot : Slot
 {
-    //void Update()
-    //{
-    //    base.Update();
-    //}
+    public void Awake()
+    {
+        base.Awake();
+        Controller = GameObject.Find("Hud/Inventory").GetComponent<Inventory>();
+    }
     public void DeletItem()
     {
         itemCount--;
