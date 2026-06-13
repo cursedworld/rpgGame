@@ -3,16 +3,15 @@ using UnityEngine.UI;
 
 public class MoveItem : MonoBehaviour
 {
-    public Inventory Inv;
+    public SlotController Controller;
     public Color UnActiveColor;
     public GameObject ParentSlot;
     public GameObject EquipmentSlot;
-    public int ItemID = -1;
     public bool IsEquipment = false;
 
     private void Start()
     {
-        Inv = GameObject.Find("Hud/Inventory").GetComponent<Inventory>();
+
     }
     void Update()
     {
@@ -20,9 +19,9 @@ public class MoveItem : MonoBehaviour
         if (!Input.GetMouseButton(0))
         {
             ParentSlot.transform.GetChild(0).GetComponent<Image>().color = UnActiveColor;
-            Inv.ActiveSlot = null;
-            Inv.ActiveID = -1;
-            Inv.PreviousActiveSlot = null;
+            Controller.ActiveSlot = null;
+            Controller.ActiveID = -1;
+            Controller.PreviousActiveSlot = null;
             Destroy(gameObject);
         }
     }

@@ -65,17 +65,17 @@ public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             {
                 transform.GetChild(0).GetComponent<Image>().color = ActiveColor;
                 Controller.ActiveSlot = gameObject;
-                Inventory Inv = Controller as Inventory;
-                Image Item = Instantiate(Inv.DragItem, Input.mousePosition, transform.rotation, Controller.gameObject.transform.Find("MoveItem").transform).GetComponent<Image>();
+                Image Item = Instantiate(Controller.DragItem, Input.mousePosition, transform.rotation, GameObject.Find("MoveItem").transform).GetComponent<Image>();
                 Item.sprite = transform.GetChild(1).GetComponent<Image>().sprite;
+                Item.GetComponent<MoveItem>().Controller = Controller;  
                 Item.GetComponent<MoveItem>().ParentSlot = gameObject;
-                Item.GetComponent<MoveItem>().ItemID = ItemID;
+                Item.GetComponent<MoveItem>().ParentSlot.GetComponent<Slot>().ItemID = ItemID;
                 yield break;
             }
             yield return new WaitForSeconds(0.5f);
         }
     }
-    public void Click()
+    public void Click(GameObject Button)
     {
         if (!Input.GetKeyDown(KeyCode.Space))
         {
@@ -94,6 +94,7 @@ public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 Controller.PreviousActiveSlot = gameObject;
                 Controller.ActiveSlot = gameObject;
                 Controller.ActiveID = ItemID;
+                Controller.SlotNumber = int.Parse(Button.name.Replace("Slot", "")) -1; 
             }
             else if (!FirstClick)
             {

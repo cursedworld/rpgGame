@@ -17,55 +17,69 @@ public class EquipSlot : Slot
     }
     void Update()
     {
-        GameObject ActiveSlot;
+        MoveItem ActiveSlot;
         try
         {
-            ActiveSlot = GameObject.Find("Hud/Inventory/MoveItem").transform.GetChild(0).gameObject;
+            ActiveSlot = GameObject.Find("Hud/Inventory/MoveItem").transform.GetChild(0).gameObject.GetComponent<MoveItem>();
         }
         catch
         {
             ActiveSlot = null;
         }
-        if (ActiveSlot != null && Vector3.Distance(transform.position, ActiveSlot.transform.position) < 15 && 
-            Input.GetMouseButtonUp(0) && !ActiveSlot.GetComponent<MoveItem>().ParentSlot.CompareTag("EquipSlot") && 
-            ItemID != ActiveSlot.GetComponent<MoveItem>().ItemID)
+        if (ActiveSlot != null && Vector3.Distance(transform.position, ActiveSlot.transform.position) < 15 &&
+            Input.GetMouseButtonUp(0) && !ActiveSlot.ParentSlot.CompareTag("EquipSlot") &&
+            ItemID != ActiveSlot.ParentSlot.GetComponent<Slot>().ItemID)    
         {
-            int SlotNumber = Convert.ToInt32(ActiveSlot.GetComponent<MoveItem>().ParentSlot.gameObject.name.Replace("Slot", "")) - 1;
-            if (ShopItemsPool.ItemByID(ActiveSlot.GetComponent<MoveItem>().ItemID).type == "Belt")
+            int SlotNumber = Convert.ToInt32(ActiveSlot.ParentSlot.gameObject.name.Replace("Slot", "")) - 1;
+            if (ShopItemsPool.ItemByID(ActiveSlot.ParentSlot.GetComponent<Slot>().ItemID).type == "Belt")
             {
                 int OldID = ItemID;
-                ItemID = ActiveSlot.GetComponent<MoveItem>().ItemID;
+                ItemID = ActiveSlot.ParentSlot.GetComponent<Slot>().ItemID;
                 Armor a = (Armor)ShopItemsPool.ItemByID(ItemID);
                 player.Armor += a.armor;
                 transform.GetChild(1).GetComponent<Image>().sprite = ShopItemsPool.LoadImage(ShopItemsPool.ItemByID(ItemID).name);
                 transform.GetChild(1).gameObject.SetActive(true);
                 Inv.InventorySlots[SlotNumber].GetComponent<InventorySlot>().ItemCount--;
-                if (OldID == -1)
+                if (Inv.InventorySlots[SlotNumber].GetComponent<InventorySlot>().ItemCount <= 1)
                 {
-                    if (Inv.InventorySlots[SlotNumber].GetComponent<InventorySlot>().ItemCount <= 1)
+                    Inv.InventorySlots[SlotNumber].transform.GetChild(2).gameObject.GetComponent<Text>().enabled = false;
+                    if (Inv.InventorySlots[SlotNumber].GetComponent<InventorySlot>().ItemCount <= 0)
                     {
-                        Inv.InventorySlots[SlotNumber].transform.GetChild(2).gameObject.GetComponent<Text>().enabled = false;
-                        if (Inv.InventorySlots[SlotNumber].GetComponent<InventorySlot>().ItemCount <= 0)
-                        {
-                            Inv.InventorySlots[SlotNumber].GetComponent<InventorySlot>().ItemCount = 0;
-                            Inv.InventorySlots[SlotNumber].transform.GetChild(1).gameObject.SetActive(false);
-                            Inv.InventorySlots[SlotNumber].GetComponent<InventorySlot>().ItemID = -1;
-                            Inv.InventorySlots[SlotNumber].GetComponent<InventorySlot>().ItemCount = -1;
-                        }
+                        Inv.InventorySlots[SlotNumber].GetComponent<InventorySlot>().ItemCount = 0;
+                        Inv.InventorySlots[SlotNumber].transform.GetChild(1).gameObject.SetActive(false);
+                        Inv.InventorySlots[SlotNumber].GetComponent<InventorySlot>().ItemID = -1;
+                        Inv.InventorySlots[SlotNumber].GetComponent<InventorySlot>().ItemCount = -1;
                     }
                 }
-                else
-                {   
-                    for (int i = 0; i < Inv.InventorySlots.Count;  i++)
+                if (OldID != -1)
+                {
+                    Armor olda = (Armor)ShopItemsPool.ItemByID(OldID);
+                    player.Armor -= olda.armor;
+                    bool inInventory = false;
+                    for (int i = 0; i < Inv.InventorySlots.Count; i++)
                     {
                         if (Inv.InventorySlots[i].GetComponent<InventorySlot>().ItemID == OldID)
                         {
                             Inv.InventorySlots[i].GetComponent<InventorySlot>().ItemCount++;
+                            inInventory = true;
                             break;
                         }
-                    } // Если предмета нет - не работает
+                    }
+                    if (!inInventory)
+                    {
+                        for (int i = 0; i < Inv.InventorySlots.Count; i++)
+                        {
+                            if (Inv.InventorySlots[i].GetComponent<InventorySlot>().ItemID == -1)
+                            {
+                                Inv.InventorySlots[i].GetComponent<InventorySlot>().ItemID = OldID;
+                                Inv.InventorySlots[i].transform.GetChild(1).gameObject.SetActive(true);
+                                Inv.InventorySlots[i].transform.GetChild(1).GetComponent<Image>().sprite = ShopItemsPool.LoadImage(ShopItemsPool.ItemByID(OldID).name);
+                                break;
+                            }
+                        }
+                    }
                 }
-            }   
+            }
         }
     }
 }

@@ -169,5 +169,6 @@ public class Dialoguemanager : MonoBehaviour
         DialogueField.enabled = false;
         GameObject.Find("Hud").GetComponent<UIManager>().Buttons.SetActive(false);
         ShopC.CloseShop();
+        ShopC.ClosePurchaseWin();
     }
 }

@@ -61,6 +61,11 @@ public class ShopItemsPool
         new Armor(19, "", "Belt_10", "Belt",9, 17, 2),
         new Potion(0, 5, "Potion_1", "Heal", 10, 12),
         new Potion(0, 6, "Potion_2", "Heal", 11, 18),
+        new Potion(0, 7, "Potion_3", "Heal", 12, 25),
+        new Potion(5, 0, "Potion_4", "Heal", 13, 30),
+        new Potion(10, 9, "Potion_5", "Heal", 14, 50),
+        new Potion(15, 0, "Potion_6", "Heal", 15, 40),
+        new Potion(10, 20, "Potion_7", "Heal", 16, 100),
     };
     public static List<Item> CreatePool(string PoolType)
     {
@@ -114,5 +119,10 @@ public class ShopItemsPool
     {
         Item i = ItemByID(id);
         return ItemTypes.Any(x => x == i.type);
+    }
+    public static bool IsPotion(int id)
+    {
+        Item i = ItemByID(id);
+        return PotionTypes.Any(x => x == i.type);
     }
 }

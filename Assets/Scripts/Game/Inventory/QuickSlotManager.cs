@@ -1,8 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class QuickSlotManager : MonoBehaviour
+public class QuickSlotManager : SlotController
 {
     public List<GameObject> slots;
     public Color ActiveColor;

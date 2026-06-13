@@ -13,23 +13,26 @@ public class ShopController : SlotController
     public GameObject Shop;
     public Color SoldColor;
     public Text Money;
-
+    public GameObject purchaseWin;
+    public Color defaultColor = Color.white;
     private void Awake()
     {
+        purchaseWin = GameObject.Find("Hud/Shop/CountWindow");
         inv = GameObject.Find("Hud/Inventory").GetComponent<Inventory>();
         Money = GameObject.Find("Shop/Balance").GetComponent<Text>();
         player = GameObject.Find("Player").GetComponent<Player>();
-    }
-    void Start()
-    {
         for (int i = 0; i < GameObject.Find("Hud/Shop/ShopSlots").transform.childCount; i++)
         {
             ShopSlots.Add(GameObject.Find("Hud/Shop/ShopSlots").transform.GetChild(i).gameObject);
         }
+    }
+    void Start()
+    {
         BuyButton = GameObject.Find("Hud/Shop/Buy");
         UI = GameObject.Find("Hud").GetComponent<UIManager>();
         Shop = gameObject;
         Shop.SetActive(false);
+        purchaseWin.SetActive(false);
     }
     
     void Update()
@@ -44,7 +47,7 @@ public class ShopController : SlotController
         }
         if(CurrentShop != null)
         {
-            for(int i = 0; i < ShopSlots.Count; i++)
+            for (int i = 0; i < ShopSlots.Count; i++)
             {
                 if (CurrentShop.CurrentShop.Count > i && CurrentShop.CurrentShop[i].ItemCount > 0)
                 {
@@ -52,6 +55,7 @@ public class ShopController : SlotController
                     ShopSlots[i].transform.GetComponent<Button>().enabled = true;
                     ShopSlots[i].transform.GetChild(2).GetComponent<Text>().enabled = true;
                     ShopSlots[i].transform.GetChild(3).GetComponent<Text>().enabled = true;
+                    ShopSlots[i].transform.GetChild(1).GetComponent<Image>().color = defaultColor;
                 }
                 else
                 {
@@ -106,22 +110,30 @@ public class ShopController : SlotController
     }
     public void WhenBuy()
     {
+        purchaseWin.SetActive(true);
+        purchaseWin.transform.GetChild(1).GetComponent<Image>().sprite = ShopItemsPool.LoadImage(ShopItemsPool.ItemByID(ActiveID).name);
+        purchaseWin.transform.GetChild(4).GetComponent<Slider>().maxValue = CurrentShop.CurrentShop[SlotNumber].ItemCount;
+        purchaseWin.transform.GetChild(4).GetComponent<Slider>().value = CurrentShop.CurrentShop[SlotNumber].ItemCount /2;
+        purchaseWin.transform.GetChild(5).GetComponent<Text>().text = purchaseWin.transform.GetChild(4).GetComponent<Slider>().value + "/" + CurrentShop.CurrentShop[SlotNumber].ItemCount.ToString();
+    }
+    public void Buy()
+    {
         UI.WhenBuyText.GetComponent<FadeText>().enabled = true;
-        if (player.Coin < ShopItemsPool.ItemByID(ActiveID).price)
+        if (player.Coin < ShopItemsPool.ItemByID(ActiveID).price * purchaseWin.transform.GetChild(4).GetComponent<Slider>().value)
         {
             UI.WhenBuyText.GetComponent<Text>().text = "You have not enought money! You need" + (ShopItemsPool.ItemByID(ActiveID).price - player.Coin).ToString() + " coins";
         }
         else
         {
             UI.WhenBuyText.GetComponent<Text>().text = "You succesfully bought an item";
-            player.Coin -= ShopItemsPool.ItemByID(ActiveID).price;
+            player.Coin -= ShopItemsPool.ItemByID(ActiveID).price * (int)purchaseWin.transform.GetChild(4).GetComponent<Slider>().value;
             Money.text = "Money: " + player.Coin;
-            inv.ItemToInventory(this);
+            inv.ItemToInventory(this, (int)purchaseWin.transform.GetChild(4).GetComponent<Slider>().value);
             for (int i = 0; i < ShopSlots.Count; i++)
             {
                 if (ShopSlots[i].GetComponent<ShopSlot>().ItemID == ActiveID)
                 {
-                    CurrentShop.CurrentShop[i].ItemCount--;
+                    CurrentShop.CurrentShop[i].ItemCount -= (int)purchaseWin.transform.GetChild(4).GetComponent<Slider>().value;
                     ShopSlots[i].transform.GetChild(2).GetComponent<Text>().text = CurrentShop.CurrentShop[i].ItemCount.ToString();
                     if (CurrentShop.CurrentShop[i].ItemCount <= 0)
                     {
@@ -132,7 +144,19 @@ public class ShopController : SlotController
                     break;
                 }
             }
+            purchaseWin.SetActive(false);
         }
         UI.WhenBuyText.GetComponent<FadeText>().Show = true;
+    }
+    public void ClosePurchaseWin()
+    {
+        purchaseWin.SetActive(false);
+    }
+    public void ChangeCount()
+    {        
+        if (purchaseWin != null)
+        {
+            purchaseWin.transform.GetChild(5).GetComponent<Text>().text = purchaseWin.transform.GetChild(4).GetComponent<Slider>().value + "/" + CurrentShop.CurrentShop[SlotNumber].ItemCount.ToString();
+        }
     }
 }
