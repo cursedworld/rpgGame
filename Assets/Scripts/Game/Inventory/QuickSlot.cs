@@ -126,10 +126,14 @@ public class QuickSlot : Slot
     public void DeletItem()
     {
         itemCount--;
-        if (itemCount <= 0)
+        if ( ItemCount == 1)
+        {
+            transform.GetChild(2).GetComponent<Text>().enabled = false;
+        }
+        else if (itemCount <= 0)
         {
             ItemID = -1;
-            transform.GetChild(1).GetComponent<Image>().sprite = null;
+            transform.GetChild(1).gameObject.SetActive(false);
         }
     }
 }

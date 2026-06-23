@@ -22,36 +22,48 @@ public class Inventory : SlotController
             eventData.position = Input.mousePosition;
             List<RaycastResult> R = new();
             EventSystem.current.RaycastAll(eventData, R);
-            if (R.Count == 0)
+            bool PressButton = false;
+            for ( int i = 0; i < R.Count; i++ )
             {
-                for (int i = 0; i < ActionWinParent.transform.childCount; i++)
+                if (R[i].gameObject.transform.parent.name.Contains("Action"))
                 {
-                    Destroy(ActionWinParent.transform.GetChild(i).gameObject);
+                    PressButton = true;
+                    break;
                 }
             }
-            else
+            if (!Input.GetMouseButtonDown(0) || (Input.GetMouseButtonDown(0)) && PressButton == false)
             {
-                for (int r = 0; r < R.Count; r++)
+                if (R.Count == 0)
                 {
-                    if (!R[r].gameObject.transform.parent.name.Contains("Slot"))
-                    {
-                        R.RemoveAt(r);
-                    }
-                }
-                for (int i = 0; i < ActionWinParent.transform.childCount; i++)
-                {
-                    bool hasParent = false;
-                    for (int r = 0; r < R.Count; r++)
-                    {
-                        if (ActionWinParent.transform.GetChild(i).GetComponent<SlotAction>().ParentSlot.name == R[r].gameObject.transform.parent.name)
-                        {
-                            hasParent = true;
-                            break;
-                        }
-                    }
-                    if (hasParent == false)
+                    for (int i = 0; i < ActionWinParent.transform.childCount; i++)
                     {
                         Destroy(ActionWinParent.transform.GetChild(i).gameObject);
+                    }
+                }
+                else
+                {
+                    for (int r = 0; r < R.Count; r++)
+                    {
+                        if (!R[r].gameObject.transform.parent.name.Contains("Slot"))
+                        {
+                            R.RemoveAt(r);
+                        }
+                    }
+                    for (int i = 0; i < ActionWinParent.transform.childCount; i++)
+                    {
+                        bool hasParent = false;
+                        for (int r = 0; r < R.Count; r++)
+                        {
+                            if (ActionWinParent.transform.GetChild(i).GetComponent<SlotAction>().ParentSlot.name == R[r].gameObject.transform.parent.name)
+                            {
+                                hasParent = true;
+                                break;
+                            }
+                        }
+                        if (hasParent == false)
+                        {
+                            Destroy(ActionWinParent.transform.GetChild(i).gameObject);
+                        }
                     }
                 }
             }

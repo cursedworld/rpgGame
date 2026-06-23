@@ -13,7 +13,7 @@ public class InventorySlot : Slot, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (eventData.button == PointerEventData.InputButton.Right)
+        if (eventData.button == PointerEventData.InputButton.Right && ItemID != -1)
         {
             Inventory i = Controller as Inventory;
             for (int j = 0; j < i.ActionWinParent.transform.childCount; j++)

@@ -32,14 +32,17 @@ public class QuickSlotManager : SlotController
 
     void Update()
     {
-        for (int i = 0; i < Keys.Count; i++)
+        if ( Input.anyKeyDown)
         {
-            if (Input.GetKeyDown(Keys[i]))
+            for (int i = 0; i < Keys.Count; i++)
             {
-                ActiveSlot(slots[i].GetComponent<QuickSlot>().ItemID);
-                slots[i].GetComponent<QuickSlot>().DeletItem();
+                if (Input.GetKeyDown(Keys[i]) && slots[i].GetComponent<QuickSlot>().ItemID != -1)
+                {
+                    ActiveSlot(slots[i].GetComponent<QuickSlot>().ItemID);
+                    slots[i].GetComponent<QuickSlot>().DeletItem();
+                }
             }
-        }
+        } 
     }
     public void ActiveSlot(int id)
     {
@@ -49,6 +52,10 @@ public class QuickSlotManager : SlotController
             case "Heal":
                 {
                     player.Hp += P.Amount;
+                    if (player.Hp > 100)
+                    {
+                        player.Hp = 100;
+                    }
                     break;
                 }
         }
