@@ -1,15 +1,19 @@
 using UnityEngine;
+using UnityEngine.InputSystem.XR;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 public class SlotAction : MonoBehaviour
 {
     public GameObject ParentSlot;
     public InventorySlot InvS;
     public Player player;
+    public Inventory Inv;
     void Start()
     {
         InvS = ParentSlot.GetComponent<InventorySlot>();
         player = GameObject.Find("Player").GetComponent<Player>();
+        Inv = GameObject.Find("Hud/Inventory").GetComponent<Inventory>();
     }
 
     void Update()
@@ -44,12 +48,40 @@ public class SlotAction : MonoBehaviour
         }
         else
         {
-            Armor A = (Armor)ShopItemsPool.ItemByID(InvS.ItemID); //
+            Armor A = (Armor)ShopItemsPool.ItemByID(InvS.ItemID);
+            for (int i = 0; i < Inv.Equipment.EquipmentSlotNames.Count; i++)
+            {
+                if (Inv.Equipment.EquipmentSlotNames[i] == A.SlotName)
+                {
+                    if (Inv.Equipment.EquipmentSlots[i].GetComponent<EquipSlot>().ItemID != -1)
+                    {
+                        return;
+                    }
+                    Inv.Equipment.EquipmentSlots[i].GetComponent<EquipSlot>().ItemID = InvS.ItemID;
+                    Inv.Equipment.EquipmentSlots[i].transform.GetChild(1).GetComponent<Image>().sprite = ShopItemsPool.LoadImage(ShopItemsPool.ItemByID(InvS.ItemID).name);
+                    Inv.Equipment.EquipmentSlots[i].transform.GetChild(1).gameObject.SetActive(true);
+                    InvS.ItemCount--;
+                    if (InvS.ItemCount == 1)
+                    {
+                        ParentSlot.transform.GetChild(2).gameObject.GetComponent<Text>().enabled = false;
+                    }
+                    else if (InvS.ItemCount == 0)
+                    {
+                        InvS.ItemID = -1;
+                        ParentSlot.transform.GetChild(1).gameObject.SetActive(false);
+                    }
+                    Destroy(gameObject);
+                    return;
+                }
+            }
         }
     }
     public void TakeOne()
     {
-
+        GameObject Item = Instantiate(Inv.DragItem, Input.mousePosition, transform.rotation, GameObject.Find("MoveItem").transform); //ParentSlot of moveitem has not asigned
+        Item.GetComponent<Image>().sprite = ShopItemsPool.LoadImage(ShopItemsPool.ItemByID(InvS.ItemID).name);
+        Item.transform.GetChild(0).GetComponent<Text>().enabled = false;
+        Destroy(gameObject);
     }
     public void TakeHalf()
     {

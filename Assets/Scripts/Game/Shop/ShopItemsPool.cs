@@ -20,11 +20,13 @@ public class Armor: Item
     public int armor;
     public string Enchant;
     public float Weight;
-    public Armor(int armor, string Enchant, string name, string type, int id, int price, float weight) : base(name, type, id, price)
+    public string SlotName;
+    public Armor(int armor, string Enchant, string name, string type, int id, int price, float weight, string SlotName) : base(name, type, id, price)
     {
         this.armor = armor;
         this.Enchant = Enchant;
         Weight = weight;
+        this.SlotName = SlotName;
     }
 }
 public class Potion : Item
@@ -49,16 +51,16 @@ public class ShopItemsPool
     };
     public static List<Item> items = new()
     {
-        new Armor(10, "", "Belt_1", "Belt", 0, 12, 2),
-        new Armor(11, "", "Belt_2", "Belt", 1, 18, 2),
-        new Armor(12, "", "Belt_3", "Belt", 2, 11, 1.5f),
-        new Armor(13, "", "Belt_4", "Belt", 3, 16, 2),
-        new Armor(14, "", "Belt_5", "Belt", 4, 19, 2),
-        new Armor(15, "", "Belt_6", "Belt", 5, 10, 1.3f),
-        new Armor(16, "", "Belt_7", "Belt", 6, 13, 2),
-        new Armor(17, "", "Belt_8", "Belt", 7, 14, 2),
-        new Armor(18, "", "Belt_9", "Belt", 8, 15, 1.8f),
-        new Armor(19, "", "Belt_10", "Belt",9, 17, 2),
+        new Armor(10, "", "Belt_1", "Belt", 0, 12, 2, "BodyArmor"),
+        new Armor(11, "", "Belt_2", "Belt", 1, 18, 2, "BodyArmor"),
+        new Armor(12, "", "Belt_3", "Belt", 2, 11, 1.5f, "BodyArmor"),
+        new Armor(13, "", "Belt_4", "Belt", 3, 16, 2, "BodyArmor"),
+        new Armor(14, "", "Belt_5", "Belt", 4, 19, 2, "BodyArmor"),
+        new Armor(15, "", "Belt_6", "Belt", 5, 10, 1.3f, "BodyArmor"),
+        new Armor(16, "", "Belt_7", "Belt", 6, 13, 2, "BodyArmor"),
+        new Armor(17, "", "Belt_8", "Belt", 7, 14, 2, "BodyArmor"),
+        new Armor(18, "", "Belt_9", "Belt", 8, 15, 1.8f, "BodyArmor"),
+        new Armor(19, "", "Belt_10", "Belt",9, 17, 2, "BodyArmor"),
         new Potion(0, 5, "Potion_1", "Heal", 10, 12),
         new Potion(0, 6, "Potion_2", "Heal", 11, 18),
         new Potion(0, 7, "Potion_3", "Heal", 12, 25),

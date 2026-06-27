@@ -9,10 +9,11 @@ public class Inventory : SlotController
     public List<GameObject> InventorySlots;
     public ShopItemsPool SP;
     public GameObject ActionWinParent;
-
-    void Start()
+    public EquipmentInventory Equipment;
+    void Awake()
     {
         ActionWinParent = GameObject.Find("Hud/Inventory/ActionWindow");
+        Equipment = GameObject.Find("Hud/PlayerStats").GetComponent<EquipmentInventory>();
     }
     void Update()
     {
