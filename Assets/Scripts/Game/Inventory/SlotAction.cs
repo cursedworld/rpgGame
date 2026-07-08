@@ -78,9 +78,14 @@ public class SlotAction : MonoBehaviour
     }
     public void TakeOne()
     {
-        GameObject Item = Instantiate(Inv.DragItem, Input.mousePosition, transform.rotation, GameObject.Find("MoveItem").transform); //ParentSlot of moveitem has not asigned
+        GameObject Item = Instantiate(Inv.DragItem, Input.mousePosition, transform.rotation, GameObject.Find("MoveItem").transform);
+        Item.GetComponent<MoveItem>().ParentSlot = ParentSlot;
+        Item.GetComponent<MoveItem>().Controller = Inv;
+        Item.GetComponent<MoveItem>().TakeOne = true;
         Item.GetComponent<Image>().sprite = ShopItemsPool.LoadImage(ShopItemsPool.ItemByID(InvS.ItemID).name);
         Item.transform.GetChild(0).GetComponent<Text>().enabled = false;
+        ParentSlot.GetComponent<InventorySlot>().ItemCount--;
+        ParentSlot.transform.GetChild(2).gameObject.GetComponent<Text>().text = ParentSlot.GetComponent<InventorySlot>().ItemCount.ToString();
         Destroy(gameObject);
     }
     public void TakeHalf()
