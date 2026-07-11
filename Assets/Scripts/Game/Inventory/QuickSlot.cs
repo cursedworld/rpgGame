@@ -121,6 +121,7 @@ public class QuickSlot : Slot
                     }
                 }
             }
+            ActiveSlot.DestroyMoveItem();
         }
     }
     public void DeletItem()

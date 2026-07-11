@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -54,7 +53,7 @@ public class InventorySlot : Slot, IPointerClickHandler
                 Armor a = (Armor)ShopItemsPool.ItemByID(ActiveSlot.ParentSlot.GetComponent<Slot>().ItemID);
                 player.Armor -= a.armor;
             }
-            else if(PrevQuickSlot != null)
+            else if (PrevQuickSlot != null)
             {
                 PrevSlot = PrevQuickSlot;
             }
@@ -66,26 +65,40 @@ public class InventorySlot : Slot, IPointerClickHandler
             {
                 if (ItemID == -1)
                 {
-                    ItemCount = PrevSlot.ItemCount;
+                    if (ActiveSlot.TakeOne == true)
+                    {
+                        ItemCount++;
+                    }
+                    else
+                    {
+                        ItemCount = PrevSlot.ItemCount;
+                    }
                     ItemID = ActiveSlot.ParentSlot.GetComponent<Slot>().ItemID;
                     transform.GetChild(1).GetComponent<Image>().sprite = ShopItemsPool.LoadImage(ShopItemsPool.ItemByID(ItemID).name);
                     transform.GetChild(1).gameObject.SetActive(true);
-                    if (PrevEquipSlot == null)
+                    if (PrevEquipSlot == null && ActiveSlot.TakeOne == false)
                     {
                         PrevSlot.ItemCount = 0;
                     }
                 }
                 else if (ActiveSlot.ParentSlot.GetComponent<Slot>().ItemID == ItemID)
                 {
-                    ItemCount+= PrevSlot.ItemCount;
+                    ItemCount += PrevSlot.ItemCount;
+                    if (ActiveSlot.TakeOne == true)
+                    {
+                        ItemCount++;
+                    }
                     transform.GetChild(2).gameObject.GetComponent<Text>().enabled = true;
                     PrevSlot.ItemCount = 0;
                     ActiveSlot.ParentSlot.transform.GetChild(2).gameObject.GetComponent<Text>().enabled = false;
                 }
-                ActiveSlot.ParentSlot.transform.GetChild(1).gameObject.SetActive(false);
-                PrevSlot.ItemID = -1;
+                if (PrevSlot.ItemCount == 0)
+                {
+                    ActiveSlot.ParentSlot.transform.GetChild(1).gameObject.SetActive(false);
+                    PrevSlot.ItemID = -1;
+                }
             }
-            else
+            else ///////////
             {
                 Sprite S = ActiveSlot.ParentSlot.transform.GetChild(1).GetComponent<Image>().sprite;
                 ActiveSlot.ParentSlot.transform.GetChild(1).GetComponent<Image>().sprite = transform.GetChild(1).GetComponent<Image>().sprite;
@@ -108,6 +121,7 @@ public class InventorySlot : Slot, IPointerClickHandler
                     ItemCount = C;
                 }
             }
+            ActiveSlot.DestroyMoveItem();
         }
     }
 }

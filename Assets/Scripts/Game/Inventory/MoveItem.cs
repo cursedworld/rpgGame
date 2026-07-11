@@ -1,5 +1,7 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class MoveItem : MonoBehaviour
@@ -18,14 +20,24 @@ public class MoveItem : MonoBehaviour
     void Update()
     {
         transform.position = Input.mousePosition;
-        if ((!Input.GetMouseButton(0) && TakeOne == false) || (Input.GetMouseButtonDown(0) && TakeOne == true))
+        PointerEventData eventData = new(EventSystem.current);
+        eventData.position = Input.mousePosition;
+        List<RaycastResult> R = new();
+        EventSystem.current.RaycastAll(eventData, R);
+        if (Input.GetMouseButtonDown(0))
         {
-            StartCoroutine(DestroyMoveItem());
+            if (R.Count < 2)
+            {
+                if (TakeOne == true)
+                {
+                    ParentSlot.GetComponent<InventorySlot>().ItemCount++;
+                }
+                DestroyMoveItem();
+            }
         }
     }
-    public IEnumerator DestroyMoveItem()
+    public void DestroyMoveItem()
     {
-        yield return new WaitForSeconds(0.22f);
         ParentSlot.transform.GetChild(0).GetComponent<Image>().color = UnActiveColor;
         Controller.ActiveSlot = null;
         Controller.ActiveID = -1;

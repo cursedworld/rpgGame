@@ -80,6 +80,7 @@ public class EquipSlot : Slot
                     }
                 }
             }
+            ActiveSlot.DestroyMoveItem();
         }
     }
 }
