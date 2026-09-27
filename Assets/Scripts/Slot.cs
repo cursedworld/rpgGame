@@ -65,7 +65,16 @@ public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             {
                 transform.GetChild(0).GetComponent<Image>().color = ActiveColor;
                 Controller.ActiveSlot = gameObject;
-                GameObject Item = Instantiate(Controller.DragItem, Input.mousePosition, transform.rotation, GameObject.Find("MoveItem").transform);
+                Transform P;
+                if (GameObject.Find("MoveItem") != null)
+                {
+                    P = GameObject.Find("MoveItem").transform;
+                }
+                else
+                {
+                    P = GameObject.Find("TrashMoveItem").transform;
+                }
+                GameObject Item = Instantiate(Controller.DragItem, Input.mousePosition, transform.rotation, P);
                 Item.GetComponent<Image>().sprite = transform.GetChild(1).GetComponent<Image>().sprite;
                 Item.transform.GetChild(0).GetComponent<Text>().enabled = false;
                 Item.GetComponent<MoveItem>().Controller = Controller;  

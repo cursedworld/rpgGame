@@ -10,11 +10,11 @@ public class ShopController : SlotController
     public UIManager UI;
     public Player player;
     public Inventory inv;
-    public GameObject Shop;
     public Color SoldColor;
     public Text Money;
     public GameObject purchaseWin;
     public Color defaultColor = Color.white;
+    public Dialoguemanager DM;
     private void Awake()
     {
         purchaseWin = GameObject.Find("Hud/Shop/CountWindow");
@@ -28,10 +28,9 @@ public class ShopController : SlotController
     }
     void Start()
     {
+        DM = GameObject.Find("Player").GetComponent<Dialoguemanager>();
         BuyButton = GameObject.Find("Hud/Shop/Buy");
         UI = GameObject.Find("Hud").GetComponent<UIManager>();
-        Shop = gameObject;
-        Shop.SetActive(false);
         purchaseWin.SetActive(false);
     }
     
@@ -91,7 +90,7 @@ public class ShopController : SlotController
             ShopSlots[i].transform.GetChild(2).GetComponent<Text>().enabled = false;
             ShopSlots[i].transform.GetChild(3).GetComponent<Text>().enabled = false;
         }
-        Shop.SetActive(true);
+        gameObject.SetActive(true);
     }
 
     public void CloseShop()
@@ -101,12 +100,16 @@ public class ShopController : SlotController
             if (ShopSlots[i].GetComponent<ShopSlot>().ItemID == ActiveID)
             {
                 ShopSlots[i].transform.GetChild(0).GetComponent<Image>().color = ShopSlots[i].GetComponent<ShopSlot>().UnActiveColor;
+                ShopSlots[i].GetComponent<ShopSlot>().FirstClick = true;
                 ActiveID = -1;
                 ActiveSlot = null;
+                PreviousActiveSlot = null;
                 break;
             }
         }
-        Shop.SetActive(false);
+        gameObject.SetActive(false);
+        DM.StartPlayer();
+        ClosePurchaseWin();
     }
     public void WhenBuy()
     {
@@ -119,6 +122,11 @@ public class ShopController : SlotController
     public void Buy()
     {
         UI.WhenBuyText.GetComponent<FadeText>().enabled = true;
+        if (purchaseWin.transform.GetChild(4).GetComponent<Slider>().value == 0)
+        {
+            purchaseWin.SetActive(false);
+            return;
+        }
         if (player.Coin < ShopItemsPool.ItemByID(ActiveID).price * purchaseWin.transform.GetChild(4).GetComponent<Slider>().value)
         {
             UI.WhenBuyText.GetComponent<Text>().text = "You have not enought money! You need" + (ShopItemsPool.ItemByID(ActiveID).price - player.Coin).ToString() + " coins";

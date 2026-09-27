@@ -15,11 +15,16 @@ public class UIManager : MonoBehaviour
     public Text Armor;
     public Slider hpSlider;
     public Dialoguemanager DM;
+    public GameObject TrashWindow;
+    public Text Interact;
+    public GameObject Shop;
 
     private void Awake()
     {
        Armor = GameObject.Find("Hud/PlayerStats/Armor").GetComponent<Text>();
        WhenBuyText = GameObject.Find("Hud/Shop/WhenBuy");
+       TrashWindow = GameObject.Find("Hud/TrashWindow");
+       TrashWindow.SetActive(false);
     }
     void Start()
     {
@@ -37,6 +42,10 @@ public class UIManager : MonoBehaviour
         QuestList.SetActive(false);
         Equipment.SetActive(false);
         Inventory.SetActive(false);
+        Interact = GameObject.Find("Hud/Dialogue/ActiveDialogue").GetComponent<Text>();
+        Interact.enabled = false;
+        Shop = GameObject.Find("Hud/Shop");
+        Shop.SetActive(false);
     }
 
     void Update()
@@ -57,11 +66,11 @@ public class UIManager : MonoBehaviour
         {
             QuestList.transform.GetChild(0).gameObject.GetComponent<Text>().text = DialogueData.QuestName +"\n"+ DialogueData.QuestTask[0] + EnemiesKilled.ToString()+"|5";
         }
-        if (Input.GetKeyDown(KeyCode.Escape)&&!QuestList.activeInHierarchy)
+        if (Input.GetKeyDown(KeyCode.J)&&!QuestList.activeInHierarchy)
         {
             QuestList.SetActive(true);
         }
-        else if (Input.GetKeyDown(KeyCode.Escape)&&QuestList.activeInHierarchy)
+        else if (Input.GetKeyDown(KeyCode.J)&&QuestList.activeInHierarchy)
         {
             QuestList.SetActive(false);
         }

@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -12,6 +11,8 @@ public class MoveItem : MonoBehaviour
     public GameObject EquipmentSlot;
     public bool IsEquipment = false;
     public bool TakeOne = false;
+    public bool TakeHalf = false;
+    public int Half;
 
     private void Start()
     {
@@ -31,6 +32,10 @@ public class MoveItem : MonoBehaviour
                 if (TakeOne == true)
                 {
                     ParentSlot.GetComponent<InventorySlot>().ItemCount++;
+                }
+                else if (TakeHalf == true)
+                {
+                    ParentSlot.GetComponent<InventorySlot>().ItemCount+= ParentSlot.GetComponent<InventorySlot>().ItemCount/2;
                 }
                 DestroyMoveItem();
             }

@@ -1,7 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -28,6 +26,8 @@ public class Player : MonoBehaviour
     public UIManager UI;
     public GameManager GM;
     public float Weight;
+    public GameObject LootBox = null;
+    public Dialoguemanager DM;
     public int Armor
     {
         get
@@ -48,27 +48,27 @@ public class Player : MonoBehaviour
         }
         set
         {
-            if(hp < value)
+            if (hp < value)
             {
-                if(value < 100)
+                if (value < 100)
                 {
-                    hp = value;  
+                    hp = value;
                 }
                 else
                 {
                     hp = 100;
                 }
                 UI.healthTxT.text = hp.ToString();
-                UI.hpSlider.value = (float)hp/100;
+                UI.hpSlider.value = (float)hp / 100;
                 return;
             }
-            int blockedDamage = armor/5;
+            int blockedDamage = armor / 5;
             int ActHP = value + blockedDamage;
-            if(ActHP >= 0)
+            if (ActHP >= 0)
             {
                 hp = ActHP;
                 UI.healthTxT.text = hp.ToString();
-                UI.hpSlider.value = (float)hp/100;
+                UI.hpSlider.value = (float)hp / 100;
             }
             else
             {
@@ -76,7 +76,7 @@ public class Player : MonoBehaviour
             }
         }
     }
-    void Start() 
+    void Start()
     {
         GM = GameObject.Find("GameManager").GetComponent<GameManager>();
         UI = GameObject.Find("Hud").GetComponent<UIManager>();
@@ -87,6 +87,7 @@ public class Player : MonoBehaviour
         Cursor.visible = false;
         gameOverscreen.SetActive(false);
         Sword.enabled = false;
+        DM = GameObject.Find("Player").GetComponent<Dialoguemanager>();
     }
     void Update()
     {
@@ -95,7 +96,7 @@ public class Player : MonoBehaviour
             anim.SetBool("GetHit", false);
             HitTime = 0;
         }
-        if (Input.GetMouseButtonDown(0)&&!InventoryOpen && anim.GetBool("Attack") == false)
+        if (Input.GetMouseButtonDown(0) && !InventoryOpen && anim.GetBool("Attack") == false)
         {
             AttackTimer = Time.time;
             anim.SetBool("Attack", true);
@@ -116,7 +117,7 @@ public class Player : MonoBehaviour
         {
             Move();
         }
-        else 
+        else
         {
             m.x = 0;
             m.z = 0;
@@ -125,40 +126,58 @@ public class Player : MonoBehaviour
         {
             anim.SetBool("Jump", false);
         }
-        m.y += Physics.gravity.y * Time.deltaTime*GravityScale;
+        m.y += Physics.gravity.y * Time.deltaTime * GravityScale;
         C.Move(m * Time.deltaTime);
         Grounded = C.isGrounded;
         Rotate();
+        if (Input.GetKeyDown(KeyCode.E) && LootBox != null)
+        {
+            LootBox.GetComponent<ItemBox>().OpenBox();
+            DM.StopPlayer();
+        }
     }
     public void Move()
     {
-      float CurrentHeight = m.y;
-      float verticalInput = Input.GetAxisRaw("Vertical");
-      float horizontalInput = Input.GetAxisRaw("Horizontal");
-      m = transform.forward * verticalInput + transform.right * horizontalInput;
-      m.Normalize();
-      m *= moveSpeed;
-      m.y = CurrentHeight;
-      if (Grounded && Input.GetKeyDown(KeyCode.Space))
-      {
-        m.y = heightJump;
-        anim.SetBool("Jump", true);
-        JumpAnimTime = Time.time;
-      }
-      if (verticalInput != 0 || horizontalInput != 0)
-      {
-        anim.SetBool("IsRunning", true);
-      }
-      else
-      {
-        anim.SetBool("IsRunning", false);
-      }
+        float CurrentHeight = m.y;
+        float verticalInput = Input.GetAxisRaw("Vertical");
+        float horizontalInput = Input.GetAxisRaw("Horizontal");
+        m = transform.forward * verticalInput + transform.right * horizontalInput;
+        m.Normalize();
+        m *= moveSpeed;
+        m.y = CurrentHeight;
+        if (Grounded && Input.GetKeyDown(KeyCode.Space))
+        {
+            m.y = heightJump;
+            anim.SetBool("Jump", true);
+            JumpAnimTime = Time.time;
+        }
+        if (verticalInput != 0 || horizontalInput != 0)
+        {
+            anim.SetBool("IsRunning", true);
+        }
+        else
+        {
+            anim.SetBool("IsRunning", false);
+        }
     }
     public void Rotate()
     {
-        transform.Rotate(Vector3.up*Info.Sensitivity*Time.deltaTime*Input.GetAxis("Mouse X"));
+        transform.Rotate(Vector3.up * Info.Sensitivity * Time.deltaTime * Input.GetAxis("Mouse X"));
     }
-    public void OnCollisionEnter(Collision col) 
+
+    public GameObject FindLootBox()
+    {
+        Collider[] cols = Physics.OverlapSphere(transform.position, 20f);
+        for (int i = 0; i < cols.Length; i++)
+        {
+            if (cols[i].gameObject.name.Contains("Trash"))
+            {
+                return cols[i].gameObject;
+            }
+        }
+        return null;
+    }
+    public void OnCollisionEnter(Collision col)
     {
         if (col.gameObject.tag == "Enemy")
         {
@@ -180,8 +199,8 @@ public class Player : MonoBehaviour
             anim.SetBool("Attack", false);
             anim.SetBool("IsRunning", false);
             anim.SetBool("GetHit", false);
-            anim.SetBool("Death", true); 
-            gameOverscreen.SetActive(true); 
+            anim.SetBool("Death", true);
+            gameOverscreen.SetActive(true);
             GM.PlayerDead = true;
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
@@ -189,9 +208,27 @@ public class Player : MonoBehaviour
     }
     public IEnumerator Immobilized()
     {
-         isMoving = false;
-         yield return new WaitForSeconds(5f);
-         isMoving = true;
+        isMoving = false;
+        yield return new WaitForSeconds(5f);
+        isMoving = true;
     }
-   
+
+    public void OnTriggerEnter(Collider col)
+    {
+        if (col.gameObject.tag == "Trash")
+        {
+            LootBox = col.gameObject;
+            UI.Interact.enabled = true;
+        }
+    }
+
+    public void OnTriggerExit(Collider col)
+    {
+        if (col.gameObject.tag == "Trash")
+        {
+            LootBox = null;
+            UI.Interact.enabled = false;
+        }
+    }
+
 }
