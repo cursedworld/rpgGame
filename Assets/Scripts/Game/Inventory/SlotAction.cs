@@ -10,12 +10,17 @@ public class SlotAction : MonoBehaviour
     public GameObject Trash;
     public GameObject CountWindow;
     public Transform DivideWindow;
+    public DropManager DropM;
+    public float MaxY = -35f;
+    public float MaxX = -35f; //////////////
+    public float Step = 35f;
     void Start()
     {
         InvS = ParentSlot.GetComponent<InventorySlot>();
         player = GameObject.Find("Player").GetComponent<Player>();
         Inv = GameObject.Find("Hud/Inventory").GetComponent<Inventory>();
         DivideWindow = GameObject.Find("Hud/Inventory/DivideWindow").transform;
+        DropM = GameObject.Find("Hud").GetComponent<UIManager>().DropM;
     }
 
     void Update()
@@ -119,11 +124,20 @@ public class SlotAction : MonoBehaviour
         }
         else
         {
-            GameObject drop = Instantiate(Trash, GameObject.Find("Player").transform.position, Quaternion.identity);
-            drop.GetComponent<ItemBox>().I = GameObject.Find("Hud/Inventory").GetComponent<Inventory>();
-            drop.GetComponent<ItemBox>().CurrentItems.Add(InvS.ItemID, InvS.ItemCount);
+            box = Instantiate(Trash, GameObject.Find("Player").transform.position, Quaternion.identity);
+            box.GetComponent<ItemBox>().I = GameObject.Find("Hud/Inventory").GetComponent<Inventory>();
+            box.GetComponent<ItemBox>().CurrentItems.Add(InvS.ItemID, InvS.ItemCount);
         }
-        Debug.Log(box.GetComponent<ItemBox>().CurrentItems.Count); // 
+        if (box.GetComponent<ItemBox>().CurrentItems.Count > 9)
+        {
+            DropM.gameObject.GetComponent<ScrollRect>().enabled = true;
+            DropM.Scroll.SetActive(true);
+            DropM.Slots.transform.parent = DropM.ScrollSpawn;
+            DropM.Slots.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, -55, 0);
+            GameObject S = Instantiate(DropM.DropSlot, DropM.Slots.transform);
+            DropM.DropSlots.Add(S);
+            S.GetComponent<RectTransform>().anchoredPosition = new Vector3(MaxX + Step, MaxY + Step, 0);
+        }
         InvS.ItemCount = 0;
         InvS.ItemID = -1;
     }

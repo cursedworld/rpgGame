@@ -18,12 +18,14 @@ public class UIManager : MonoBehaviour
     public GameObject TrashWindow;
     public Text Interact;
     public GameObject Shop;
+    public DropManager DropM;
 
-    private void Awake()
+    void Awake()
     {
        Armor = GameObject.Find("Hud/PlayerStats/Armor").GetComponent<Text>();
        WhenBuyText = GameObject.Find("Hud/Shop/WhenBuy");
        TrashWindow = GameObject.Find("Hud/TrashWindow");
+       DropM = TrashWindow.GetComponent<DropManager>();
        TrashWindow.SetActive(false);
     }
     void Start()
