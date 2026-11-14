@@ -130,11 +130,6 @@ public class Player : MonoBehaviour
         C.Move(m * Time.deltaTime);
         Grounded = C.isGrounded;
         Rotate();
-        if (Input.GetKeyDown(KeyCode.E) && LootBox != null)
-        {
-            LootBox.GetComponent<ItemBox>().OpenBox();
-            DM.StopPlayer();
-        }
     }
     public void Move()
     {

@@ -1,6 +1,7 @@
 using NUnit;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class InventorySlot : Slot, IPointerClickHandler
@@ -94,6 +95,10 @@ public class InventorySlot : Slot, IPointerClickHandler
                 }
                 if (ItemID == -1)
                 {
+                    if(PrevSlot.gameObject.transform.parent.parent.name == "TrashWindow")
+                    {
+                        GameObject.Find("Player").GetComponent<Player>().LootBox.GetComponent<ItemBox>().CurrentItems.Remove(PrevSlot.ItemID);
+                    }
                     ItemID = ActiveSlot.ParentSlot.GetComponent<Slot>().ItemID;
                     transform.GetChild(1).GetComponent<Image>().sprite = ShopItemsPool.LoadImage(ShopItemsPool.ItemByID(ItemID).name);
                     transform.GetChild(1).gameObject.SetActive(true);

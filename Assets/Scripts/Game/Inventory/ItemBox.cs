@@ -17,6 +17,7 @@ public class ItemBox : MonoBehaviour
     }
     public void OpenBox()
     {
+        // убрать все картинки со слотов
         GameObject.Find("Hud").GetComponent<UIManager>().TrashWindow.SetActive(true);
         DropManager DropM = GameObject.Find("Hud/TrashWindow").GetComponent<DropManager>();
         for (int i = 0; i < CurrentItems.Count; i++)

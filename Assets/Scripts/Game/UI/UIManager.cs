@@ -97,6 +97,20 @@ public class UIManager : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
+        if (Input.GetKeyDown(KeyCode.E) && player.LootBox != null)
+        {
+            if (TrashWindow.activeInHierarchy)
+            {
+                TrashWindow.SetActive(false);
+                DM.StartPlayer();
+            }
+            else
+            {
+                player.LootBox.GetComponent<ItemBox>().OpenBox();
+                DM.StopPlayer();
+                Interact.enabled = false;
+            }
+        }
     }
     public void ChangeArmor(int value)
     {

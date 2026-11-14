@@ -43,7 +43,7 @@ public class ShopItemsPool
 {
     private static List<string> ItemTypes = new()
     {
-        "Belt"
+        "Belt", "BodyArmor"
     };
     private static List<string> PotionTypes = new()
     {
@@ -61,6 +61,16 @@ public class ShopItemsPool
         new Armor(17, "", "Belt_8", "Belt", 7, 14, 2, "BodyArmor"),
         new Armor(18, "", "Belt_9", "Belt", 8, 15, 1.8f, "BodyArmor"),
         new Armor(19, "", "Belt_10", "Belt",9, 17, 2, "BodyArmor"),
+        new Armor(30, "", "BodyArmor_1", "BodyArmor", 10, 40, 5, "BodyArmor"),
+        new Armor(25, "", "BodyArmor_2", "BodyArmor", 11, 35, 7, "BodyArmor"),
+        new Armor(27, "", "BodyArmor_3", "BodyArmor", 12, 31, 4.5f, "BodyArmor"),
+        new Armor(35, "", "BodyArmor_4", "BodyArmor", 13, 39, 7, "BodyArmor"),
+        new Armor(21, "", "BodyArmor_5", "BodyArmor", 14, 46, 5.2f, "BodyArmor"),
+        new Armor(55, "", "BodyArmor_6", "BodyArmor", 15, 49, 8.3f, "BodyArmor"),
+        new Armor(32, "", "BodyArmor_7", "BodyArmor", 16, 60, 3, "BodyArmor"),
+        new Armor(49, "", "BodyArmor_8", "BodyArmor", 17, 51, 6, "BodyArmor"),
+        new Armor(55, "", "BodyArmor_9", "BodyArmor", 18, 46, 8.8f, "BodyArmor"),
+        new Armor(31, "", "BodyArmor_10", "BodyArmor",19, 27, 6.6f, "BodyArmor"),
         new Potion(0, 5, "Potion_1", "Heal", 10, 12),
         new Potion(0, 6, "Potion_2", "Heal", 11, 18),
         new Potion(0, 7, "Potion_3", "Heal", 12, 25),

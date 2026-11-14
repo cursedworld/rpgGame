@@ -12,6 +12,8 @@ public class DropManager : SlotController
     public RectTransform Background;
     public GameObject Slots;
     public Transform ScrollSpawn;
+    public int SlotX = 0;
+    public int SlotY = 3;
     void Awake()
     {
         GameObject.Find("Hud/TrashWindow").GetComponent<ScrollRect>().enabled = false;

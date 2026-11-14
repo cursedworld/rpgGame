@@ -11,8 +11,6 @@ public class SlotAction : MonoBehaviour
     public GameObject CountWindow;
     public Transform DivideWindow;
     public DropManager DropM;
-    public float MaxY = -35f;
-    public float MaxX = -35f; //////////////
     public float Step = 35f;
     void Start()
     {
@@ -136,7 +134,13 @@ public class SlotAction : MonoBehaviour
             DropM.Slots.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, -55, 0);
             GameObject S = Instantiate(DropM.DropSlot, DropM.Slots.transform);
             DropM.DropSlots.Add(S);
-            S.GetComponent<RectTransform>().anchoredPosition = new Vector3(MaxX + Step, MaxY + Step, 0);
+            S.GetComponent<RectTransform>().anchoredPosition = new Vector3(15 + Step * DropM.SlotX, -15 + -Step * DropM.SlotY, 0);
+            DropM.SlotX++;
+            if(DropM.SlotX > 2)
+            {
+                DropM.SlotX = 0;
+                DropM.SlotY++;
+            }
         }
         InvS.ItemCount = 0;
         InvS.ItemID = -1;
